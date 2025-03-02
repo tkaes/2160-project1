@@ -13,15 +13,15 @@ main:
     # Call to write_string
     la a0, prompt               # a0 = prompt address
     la a1, prompt_end - prompt  # a1 = prompt length
-    jal write_string
+    call write_string
 
     # Call to read_string
-    jal read_string
+    call read_string
 
     # Call to write_string
-    la a1, buf               # a1 = prompt address (from buf)
-    mv a2, a0                # a0 = prompt length (from read_string return)
-    jal write_string         # Call write_string function
+    la a0, buf               # a0 = prompt address (from buf)
+    mv a1, a2                # a1 = prompt length (from read_string return)
+    call write_string         # Call write_string function
 
     # main() epilog
     ret
