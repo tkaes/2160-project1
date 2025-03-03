@@ -1,4 +1,6 @@
 .globl main
+.globl write_string
+.globl read_string
 .equ STDOUT, 1
 .equ STDIN, 0
 .equ __NR_READ, 63
