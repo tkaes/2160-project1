@@ -23,7 +23,7 @@ main:
     # Call to write_string
     la a0, buf               # a0 = prompt address (from buf)
     mv a1, a2                # a1 = prompt length (from read_string return)
-    call write_string         # Call write_string function
+    call write_string        # Call write_string function
 
     # main() epilog
     ret
@@ -38,8 +38,8 @@ write_string:
     ret
 
 read_string:
-    li a2, 100             # a2 = length to read
-    la a1, buf             # a1 = prompt address (from buf)
+    li a2, buf_end - buf       # a2 = length to read
+    la a1, buf                 # a1 = prompt address (from buf)
     
     li a7, __NR_READ       # a7 = read
     li a0, STDIN           # a0 = stdin
@@ -50,3 +50,4 @@ read_string:
 prompt:   .ascii  "Enter a message: "
 prompt_end:
 buf: .space 100
+buf_end:
