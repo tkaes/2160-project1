@@ -21,8 +21,8 @@ main:
     call read_string
 
     # Call to write_string
+    mv a1, a0                # a1 = prompt length (from read_string return)
     la a0, buf               # a0 = prompt address (from buf)
-    mv a1, a2                # a1 = prompt length (from read_string return)
     call write_string        # Call write_string function
 
     # main() epilog
