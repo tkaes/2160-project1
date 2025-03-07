@@ -25,8 +25,12 @@ main:
     la a0, buf               # a0 = prompt address (from buf)
     call write_string        # Call write_string function
 
-    # main() epilog
-    ret
+   # main epilog
+    j halt
+
+halt:
+    ebreak
+    j halt
 
 write_string:
     mv a2, a1       	   # a2 = prompt length
