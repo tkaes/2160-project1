@@ -51,7 +51,8 @@ GETS_LOOP:
     addi s1, s1, 1                  # increment string pointer
     j GETS_LOOP
 GETS_ERR:
-    li a0, 0                        # a0 = null
+    li a0, -1                        # a0 = -1
+    j GETS_DONE
 GETS_DONE:
     sb zero, 0(s1)                  # store null terminator at current position in string (a1)
 #gets epilog
