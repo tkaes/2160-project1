@@ -57,6 +57,7 @@ GETS_DONE:
 #gets epilog
     lw ra, 0(sp)                    # restore stack
     addi sp, sp, -4
+    ret
 
 puts:
 # puts prolog
