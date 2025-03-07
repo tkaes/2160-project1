@@ -12,36 +12,43 @@
 
 .text
 main:
-    # Write prompt
+    # main prolog
+    
+    # main body
+    # write prompt
     la a0, prompt           # a0 = ADDR of prompt
     call puts
     
-    # Call to gets(buf)
+    # call to gets(buf)
     la a0, buf              # a0 = ADDR of buf
     call gets
 
-    # Call to puts(buf)
+    # call to puts(buf)
     la a0, buf              # a0 = ADDR of buf
     call puts
 
-    # Exit
-    ret
+    # main epilog
+    j halt
+    
+halt:
+    ebreak
+    j halt
 
 gets:
     # a0 = ADDR of prompt
     li t0, 0                       # t0 = char c (0)
-GETCHAR_LOOP:
+GETS_LOOP:
     call getchar
-    bltz a0, EOF_LOOP              # if a0 = 0, goto EOF
+    bltz a0, GETS_DONE              # if a0 = 0, goto DONE
     li t1, NEWLINE                 # t1 = newline
-    beq a0, t1, NEWLINE_LOOP       # if a0 = t1, goto NEWLINE
+    beq a0, t1, GETS_NEWLINE       # if a0 = t1, goto NEWLINE
     addi a0, a0, 1                 # increment a0
-    jal GETCHAR_LOOP
-NEWLINE_LOOP:
+    jal GETS_LOOP
+GETS_NEWLINE:
     mv a0, t1                      # a0 = newline
     call putchar
     ret
-EOF_LOOP:
+GETS_DONE:
     li a0, -1                      # a0 = -1
     ret
 
@@ -51,13 +58,13 @@ puts:
 PUTS_LOOP:
     lb t0, 0(a0)               # t0 = first char in string
     call putchar
-    bltz a0, ERR_LOOP          # if a0 = 0, goto ERR
+    bltz a0, PUTS_ERR          # if a0 = 0, goto ERR
     addi a0, a0, 1             # increment a0
     jal PUTS_LOOP
-ERR_LOOP:
+PUTS_ERR:
     li a0, -1                  # a0 = -1
     ret
-DONE:
+PUTS_DONE:
    li a0, NEWLINE              # a0 = newline
    call putchar
    ret
