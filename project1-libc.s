@@ -88,13 +88,25 @@ PUTS_DONE:
     ret
     
 getchar:
-    mv a1, a0                       # a1 = ADDR of buf
+# getchar prolog
+    addi sp, sp, -8
+    sw ra, 4(sp)                    # store ra
+    sw s0, 0(sp)                    # store passed string pointer from gets
+# getchar body
     li a0, STDIN                    # a0 = stdin
     li a2, 1                        # a2 = length (1 char)
     li a7, __NR_READ                # a7 = read
+    addi sp, sp, -1                 # add 1 byte to stack
+    mv a1, sp                       # a1 = address where char is stored
     ecall
-    blt a0, zero, EOF_ERR_LOOP      # if returned a0 < 0, go to err loop
-    lb a0, 0(a1)                    # a0 = returned value from ecall
+    bltz a0, EOF_ERR_LOOP           # if a0 = 0, go to ERR
+    lbu s0, 0(sp)                   # load char in sp address to s0
+    addi sp, sp, 1                  # restore 1 byte
+    mv a0, s0                       # a0 = s0
+# getchar epilog
+    lw s0, 0(sp)                    # load original s0 (string pointer)
+    lw ra, 4(sp)                    # load original ra
+    addi sp, sp, 8
     ret
 EOF_ERR_LOOP:
     li a0, -1                       # a0 = -1
@@ -104,18 +116,18 @@ putchar:
 # putchar prolog
     addi sp, sp, -8
     sw ra, 4(sp)                    # store ra
-    sw s0, 0(sp)                    # store string pointer from puts
+    sw s0, 0(sp)                    # store passed string pointer from puts
 # putchar body
     mv s0, a0                       # s0 = passed char
     li a0, STDOUT                   # a0 = stdout
     li a2, 1                        # a2 = length (1 char)
     li a7, __NR_WRITE               # a7 = write
     addi sp, sp, -1                 # add 1 byte to stack
-    sb s0, 0(sp)                    # store passed char
+    sb s0, 0(sp)                    # store passed char in s0
     mv a1, sp                       # a1 = address where char is stored
     ecall
     lbu a0, 0(sp)                   # a0 = passed char
-    addi sp, sp, 1                  # restore stack
+    addi sp, sp, 1                  # restore 1 byte
 # putchar epilog
     lw s0, 0(sp)                    # load original s0 (string pointer)
     lw ra, 4(sp)                    # load original ra
